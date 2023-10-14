@@ -7,18 +7,24 @@ import invaders.ConfigReader;
 import invaders.builder.BunkerBuilder;
 import invaders.builder.Director;
 import invaders.builder.EnemyBuilder;
+import invaders.factory.EnemyProjectile;
 import invaders.factory.Projectile;
 import invaders.gameobject.Bunker;
 import invaders.gameobject.Enemy;
 import invaders.gameobject.GameObject;
 import invaders.entities.Player;
+import invaders.observer.GamePanel;
+import invaders.observer.Observer;
+import invaders.observer.Subject;
 import invaders.rendering.Renderable;
+import invaders.strategy.FastProjectileStrategy;
+import invaders.strategy.SlowProjectileStrategy;
 import org.json.simple.JSONObject;
 
 /**
  * This class manages the main loop and logic of the game
  */
-public class GameEngine {
+public class GameEngine implements Subject {
 	private List<GameObject> gameObjects = new ArrayList<>(); // A list of game objects that gets updated each frame
 	private List<GameObject> pendingToAddGameObject = new ArrayList<>();
 	private List<GameObject> pendingToRemoveGameObject = new ArrayList<>();
@@ -27,6 +33,8 @@ public class GameEngine {
 	private List<Renderable> pendingToRemoveRenderable = new ArrayList<>();
 
 	private List<Renderable> renderables =  new ArrayList<>();
+
+	private List<Observer> observers = new ArrayList<>();
 
 	private Player player;
 
@@ -79,6 +87,10 @@ public class GameEngine {
 
 		for(GameObject go: gameObjects){
 			go.update(this);
+
+			if (go instanceof Enemy && !((Enemy) go).isAlive()) {
+				pendingToRemoveGameObject.add(go);
+			}
 		}
 
 		for (int i = 0; i < renderables.size(); i++) {
@@ -93,6 +105,42 @@ public class GameEngine {
 					if(renderableA.isColliding(renderableB) && (renderableA.getHealth()>0 && renderableB.getHealth()>0)) {
 						renderableA.takeDamage(1);
 						renderableB.takeDamage(1);
+
+
+						// OBSERVER PATTERN
+						// used to identify the relevant renderable objects and set the score based on the strategies
+						for (Observer observer : observers) {
+							if (observer instanceof GamePanel) {
+								GamePanel gamePanel = (GamePanel) observer;
+
+								// if renderableA is an Enemy and the collision was with a PlayerProjectile, update the score.
+								if (renderableA.getRenderableObjectName().equals("Enemy") && renderableB.getRenderableObjectName().equals("PlayerProjectile")) {
+									if (((Enemy) renderableA).getProjectileStrategy() instanceof FastProjectileStrategy) {
+										gamePanel.setScore("fastEnemy");
+									} else if (((Enemy) renderableA).getProjectileStrategy() instanceof SlowProjectileStrategy) {
+										gamePanel.setScore("slowEnemy");
+									}
+								} else if (renderableA.getRenderableObjectName().equals("PlayerProjectile") && renderableB.getRenderableObjectName().equals("Enemy")) {
+									if (((Enemy) renderableB).getProjectileStrategy() instanceof FastProjectileStrategy) {
+										gamePanel.setScore("fastEnemy");
+									} else if (((Enemy) renderableB).getProjectileStrategy() instanceof SlowProjectileStrategy) {
+										gamePanel.setScore("slowEnemy");
+									}
+								} else if (renderableA.getRenderableObjectName().equals("EnemyProjectile") && renderableB.getRenderableObjectName().equals("PlayerProjectile")) {
+									if (((EnemyProjectile) renderableA).getStrategy() instanceof FastProjectileStrategy) {
+										gamePanel.setScore("fastEnemyProjectile");
+									} else if (((EnemyProjectile) renderableA).getStrategy() instanceof SlowProjectileStrategy) {
+										gamePanel.setScore("slowEnemyProjectile");
+									}
+								} else if (renderableA.getRenderableObjectName().equals("PlayerProjectile") && renderableB.getRenderableObjectName().equals("EnemyProjectile")) {
+									if (((EnemyProjectile) renderableB).getStrategy() instanceof FastProjectileStrategy) {
+										gamePanel.setScore("fastEnemyProjectile");
+									} else if (((EnemyProjectile) renderableB).getStrategy() instanceof SlowProjectileStrategy) {
+										gamePanel.setScore("slowEnemyProjectile");
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -122,6 +170,25 @@ public class GameEngine {
 			}
 		}
 
+		if (allEnemiesDestroyed()) {
+			for (Observer observer : observers) {
+				if (observer instanceof GamePanel) {
+					((GamePanel) observer).setCurrentState(GameState.WON);
+				}
+			}
+		}
+
+		notifyObservers();
+
+	}
+
+	public boolean allEnemiesDestroyed() {
+		for (GameObject go : gameObjects) {
+			if (go instanceof Enemy) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public List<Renderable> getRenderables(){
@@ -194,5 +261,18 @@ public class GameEngine {
 
 	public Player getPlayer() {
 		return player;
+	}
+
+	@Override
+	public void attach(Observer observer) { observers.add(observer); }
+
+	@Override
+	public void detach(Observer observer) { observers.add(observer); }
+
+	@Override
+	public void notifyObservers() {
+		for (Observer observer : observers) {
+			observer.update();
+		}
 	}
 }

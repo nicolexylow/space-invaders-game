@@ -6,7 +6,11 @@ import java.util.ArrayList;
 import invaders.ConfigReader;
 import invaders.entities.EntityViewImpl;
 import invaders.entities.SpaceBackground;
+import invaders.observer.GamePanel;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import invaders.entities.EntityView;
@@ -14,7 +18,6 @@ import invaders.rendering.Renderable;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import org.json.simple.JSONObject;
 
 public class GameWindow {
@@ -23,6 +26,7 @@ public class GameWindow {
 	private Scene scene;
     private Pane pane;
     private GameEngine model;
+    private GamePanel gamePanel;
     private List<EntityView> entityViews =  new ArrayList<EntityView>();
     private Renderable background;
 
@@ -30,13 +34,20 @@ public class GameWindow {
     private double yViewportOffset = 0.0;
     // private static final double VIEWPORT_MARGIN = 280.0;
 
-	public GameWindow(GameEngine model){
+	public GameWindow(GameEngine model, GamePanel gamePanel){
         this.model = model;
+        this.gamePanel = gamePanel;
 		this.width =  model.getGameWidth();
         this.height = model.getGameHeight();
 
         pane = new Pane();
         scene = new Scene(pane, width, height);
+
+        VBox panelBox = gamePanel.getPanelBox();
+        panelBox.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+        pane.getChildren().add(panelBox);
+
+
         this.background = new SpaceBackground(model, pane);
 
         KeyboardInputHandler keyboardInputHandler = new KeyboardInputHandler(this.model);

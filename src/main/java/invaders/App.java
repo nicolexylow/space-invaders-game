@@ -1,5 +1,6 @@
 package invaders;
 
+import invaders.observer.GamePanel;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import invaders.engine.GameEngine;
@@ -16,7 +17,7 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
         GameEngine model = new GameEngine("src/main/resources/config_easy.json");
-        GameWindow window = new GameWindow(model);
+        GameWindow window = new GameWindow(model, new GamePanel(model));
         window.run();
 
         primaryStage.setTitle("Space Invaders");
