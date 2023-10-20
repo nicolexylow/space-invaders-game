@@ -23,6 +23,9 @@ public interface Renderable {
 
     public double getHealth();
 
+    // allow for deep copying used in the memento pattern so that it does not reference the same renderables list
+    public Renderable clone();
+
     /**
      * The set of available layers
      */

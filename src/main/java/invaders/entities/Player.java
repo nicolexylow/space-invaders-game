@@ -4,6 +4,7 @@ import invaders.factory.PlayerProjectile;
 import invaders.factory.PlayerProjectileFactory;
 import invaders.factory.Projectile;
 import invaders.factory.ProjectileFactory;
+import invaders.gameobject.Enemy;
 import invaders.observer.Subject;
 import invaders.physics.Collider;
 import invaders.physics.Moveable;
@@ -17,7 +18,7 @@ import org.json.simple.JSONObject;
 
 import java.io.File;
 
-public class Player implements Moveable, Renderable {
+public class Player implements Moveable, Renderable, Cloneable {
 
     private final Vector2D position;
     private double health;
@@ -107,6 +108,14 @@ public class Player implements Moveable, Renderable {
     @Override
     public String getRenderableObjectName() {
         return "Player";
+    }
+    @Override
+    public Player clone() {
+        try {
+            return (Player) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("Unable to clone", e);
+        }
     }
 
 }

@@ -3,8 +3,10 @@ package invaders.observer;
 import invaders.engine.GameState;
 import invaders.gameobject.Enemy;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 public class GamePanel implements Observer {
     private int score = 0;
@@ -26,6 +28,7 @@ public class GamePanel implements Observer {
         timerText = new Text("Time Elapsed: " + time);
 
         panelBox = new VBox();
+        panelBox.setPrefSize(130, 50);
         panelBox.setPadding(new Insets(10));
         panelBox.getChildren().addAll(timerText, scoreText);
     }
@@ -78,5 +81,10 @@ public class GamePanel implements Observer {
     public GameState getCurrentState() {
         return currentState;
     }
+
+    public void manualSetScore(int score) { this.score = score; }
+    public void manualSetStartTime(long startTime) { this.startTime = startTime; }
+    public int getScore() { return score; }
+    public long getStartTime() { return startTime; }
 }
 

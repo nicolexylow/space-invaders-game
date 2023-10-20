@@ -1,6 +1,7 @@
 package invaders.factory;
 
 import invaders.engine.GameEngine;
+import invaders.gameobject.GameObject;
 import invaders.physics.Collider;
 import invaders.physics.Vector2D;
 import invaders.strategy.ProjectileStrategy;
@@ -23,6 +24,7 @@ public class EnemyProjectile extends Projectile{
         }
 
     }
+
     @Override
     public String getRenderableObjectName() {
         return "EnemyProjectile";

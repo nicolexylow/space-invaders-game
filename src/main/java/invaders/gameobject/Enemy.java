@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Enemy implements GameObject, Renderable {
+public class Enemy implements GameObject, Renderable, Cloneable {
     private Vector2D position;
     private int lives = 1;
     private Image image;
@@ -144,5 +144,12 @@ public class Enemy implements GameObject, Renderable {
     }
 
     public ProjectileStrategy getProjectileStrategy() { return projectileStrategy; }
-
+    @Override
+    public Enemy clone() {
+        try {
+            return (Enemy) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("Unable to clone", e);
+        }
+    }
 }

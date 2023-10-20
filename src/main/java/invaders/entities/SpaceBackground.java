@@ -1,6 +1,7 @@
 package invaders.entities;
 
 import invaders.engine.GameEngine;
+import invaders.gameobject.Enemy;
 import invaders.physics.Vector2D;
 import invaders.rendering.Renderable;
 
@@ -9,7 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
-public class SpaceBackground implements Renderable {
+public class SpaceBackground implements Renderable, Cloneable {
 	private Rectangle space;
 	private Pane pane;
     private GameEngine model;
@@ -64,5 +65,14 @@ public class SpaceBackground implements Renderable {
 	@Override
 	public String getRenderableObjectName() {
 		return "background";
+	}
+
+	@Override
+	public SpaceBackground clone() {
+		try {
+			return (SpaceBackground) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException("Unable to clone", e);
+		}
 	}
 }

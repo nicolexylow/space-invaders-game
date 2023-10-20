@@ -1,5 +1,9 @@
 package invaders.engine;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +17,7 @@ import invaders.gameobject.Bunker;
 import invaders.gameobject.Enemy;
 import invaders.gameobject.GameObject;
 import invaders.entities.Player;
+import invaders.memento.StateMemento;
 import invaders.observer.GamePanel;
 import invaders.observer.Observer;
 import invaders.observer.Subject;
@@ -24,7 +29,7 @@ import org.json.simple.JSONObject;
 /**
  * This class manages the main loop and logic of the game
  */
-public class GameEngine implements Subject {
+public class GameEngine implements Subject, Cloneable {
 	private List<GameObject> gameObjects = new ArrayList<>(); // A list of game objects that gets updated each frame
 	private List<GameObject> pendingToAddGameObject = new ArrayList<>();
 	private List<GameObject> pendingToRemoveGameObject = new ArrayList<>();
@@ -76,6 +81,7 @@ public class GameEngine implements Subject {
 		}
 
 	}
+
 
 	/**
 	 * Updates the game/simulation
@@ -274,5 +280,42 @@ public class GameEngine implements Subject {
 		for (Observer observer : observers) {
 			observer.update();
 		}
+	}
+
+	public GamePanel getGamePanel() {
+		for (Observer observer : observers) {
+			if (observer instanceof GamePanel) {
+				return (GamePanel) observer;
+			}
+		}
+		return null;
+	}
+
+
+	//--------------------------------------------------------
+	// MEMENTO PATTERN
+
+	public StateMemento save() {
+		// deep copying so that it does not reference the same renderables and gameObjects list
+		List<Renderable> copiedRenderables = new ArrayList<>();
+		for (Renderable ro : renderables) {
+			copiedRenderables.add(ro.clone());
+		}
+
+		List<GameObject> copiedGameObjects = new ArrayList<>();
+		for (GameObject go : gameObjects) {
+			copiedGameObjects.add(go.clone());
+		}
+
+		long currentElapsedMillis = System.currentTimeMillis() - getGamePanel().getStartTime();
+
+		return new StateMemento(getGamePanel().getScore(), currentElapsedMillis, copiedRenderables, copiedGameObjects);
+	}
+
+	public void revert(StateMemento stateMemento) {
+		renderables = new ArrayList<>(stateMemento.getRenderables());
+		gameObjects = new ArrayList<>(stateMemento.getGameObjects());
+		getGamePanel().manualSetScore(stateMemento.getScore());
+		getGamePanel().manualSetStartTime(System.currentTimeMillis() - stateMemento.getElapsedMillis());
 	}
 }

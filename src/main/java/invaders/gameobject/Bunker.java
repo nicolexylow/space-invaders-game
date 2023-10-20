@@ -8,7 +8,7 @@ import invaders.state.BunkerState;
 import invaders.state.GreenState;
 import javafx.scene.image.Image;
 
-public class Bunker implements GameObject, Renderable {
+public class Bunker implements GameObject, Renderable, Cloneable {
     private Vector2D position;
     private double width;
     private double height;
@@ -105,5 +105,13 @@ public class Bunker implements GameObject, Renderable {
 
     public void setState(BunkerState state) {
         this.state = state;
+    }
+
+    public Bunker clone() {
+        try {
+            return (Bunker) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("Unable to clone", e);
+        }
     }
 }

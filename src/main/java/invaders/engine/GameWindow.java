@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import invaders.ConfigReader;
 import invaders.entities.EntityViewImpl;
 import invaders.entities.SpaceBackground;
+import invaders.memento.StateCaretaker;
 import invaders.observer.GamePanel;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -27,6 +29,7 @@ public class GameWindow {
     private Pane pane;
     private GameEngine model;
     private GamePanel gamePanel;
+    private StateCaretaker stateCaretaker = new StateCaretaker();
     private List<EntityView> entityViews =  new ArrayList<EntityView>();
     private Renderable background;
 
@@ -47,6 +50,25 @@ public class GameWindow {
         panelBox.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         pane.getChildren().add(panelBox);
 
+        // SAVE AND UNDO BUTTON
+        Button saveButton = new Button("Save");
+        saveButton.setFocusTraversable(false);
+        saveButton.setOnAction(e -> {
+            stateCaretaker.saveState(model);
+        });
+
+        Button undoButton = new Button("Undo");
+        undoButton.setFocusTraversable(false);
+        undoButton.setOnAction(e -> {
+            stateCaretaker.revertState(model);
+        });
+
+        HBox buttonBox = new HBox(10);
+        buttonBox.getChildren().addAll(saveButton, undoButton);
+        buttonBox.layoutXProperty().bind(pane.widthProperty().subtract(buttonBox.widthProperty().add(10)));
+        buttonBox.setLayoutY(10);
+
+        pane.getChildren().add(buttonBox);
 
         this.background = new SpaceBackground(model, pane);
 
