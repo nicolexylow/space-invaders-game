@@ -69,8 +69,21 @@ public class GameWindow {
             stateCaretaker.revertState(model);
         });
 
+        // CHEAT BUTTONS
+        Button removeFastEnemyButton = new Button("Remove Fast Enemy");
+        removeFastEnemyButton.setFocusTraversable(false);
+        removeFastEnemyButton.setOnAction(e -> {
+            model.remove("slow");
+        });
+
+        Button removeSlowEnemyButton = new Button("Remove Slow Enemy");
+        removeSlowEnemyButton.setFocusTraversable(false);
+        removeSlowEnemyButton.setOnAction(e -> {
+            model.remove("fast");
+        });
+
         HBox buttonBox = new HBox(10);
-        buttonBox.getChildren().addAll(saveButton, undoButton);
+        buttonBox.getChildren().addAll(saveButton, undoButton, removeFastEnemyButton, removeSlowEnemyButton);
         buttonBox.layoutXProperty().bind(pane.widthProperty().subtract(buttonBox.widthProperty().add(10)));
         buttonBox.setLayoutY(10);
 

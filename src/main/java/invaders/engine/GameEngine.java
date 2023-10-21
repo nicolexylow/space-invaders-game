@@ -340,4 +340,29 @@ public class GameEngine implements Subject, Cloneable {
 			}
 		}
 	}
+
+	//--------------------------------------------------------
+	// CHEAT FEATURE
+
+	public void remove(String strategy) {
+		for (GameObject go : gameObjects) {
+			if (strategy.equals("fast")) {
+				if (go instanceof Enemy && ((Enemy) go).getProjectileStrategy() instanceof FastProjectileStrategy ) {
+					((Enemy) go).setLives(0);
+				}
+
+				if (go instanceof EnemyProjectile && ((EnemyProjectile) go).getStrategy() instanceof FastProjectileStrategy) {
+					((EnemyProjectile) go).takeDamage(1);
+				}
+			} else if (strategy.equals("slow")) {
+				if (go instanceof Enemy && ((Enemy) go).getProjectileStrategy() instanceof SlowProjectileStrategy ) {
+					((Enemy) go).setLives(0);
+				}
+
+				if (go instanceof EnemyProjectile && ((EnemyProjectile) go).getStrategy() instanceof SlowProjectileStrategy) {
+					((EnemyProjectile) go).takeDamage(1);
+				}
+			}
+		}
+	}
 }
