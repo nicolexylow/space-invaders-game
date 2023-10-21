@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import invaders.ConfigReader;
 import invaders.entities.EntityViewImpl;
 import invaders.entities.SpaceBackground;
+import invaders.gameobject.Enemy;
 import invaders.memento.StateCaretaker;
 import invaders.observer.GamePanel;
 import javafx.geometry.Insets;
@@ -60,6 +61,11 @@ public class GameWindow {
         Button undoButton = new Button("Undo");
         undoButton.setFocusTraversable(false);
         undoButton.setOnAction(e -> {
+            for (EntityView view : entityViews) {
+                pane.getChildren().remove(view.getNode());
+            }
+            entityViews.clear();
+
             stateCaretaker.revertState(model);
         });
 

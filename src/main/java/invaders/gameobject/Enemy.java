@@ -1,18 +1,18 @@
 package invaders.gameobject;
 
-import invaders.engine.GameEngine;
-import invaders.factory.EnemyProjectileFactory;
-import invaders.factory.Projectile;
-import invaders.factory.ProjectileFactory;
-import invaders.physics.Collider;
-import invaders.physics.Vector2D;
-import invaders.rendering.Renderable;
-import invaders.strategy.ProjectileStrategy;
-import javafx.scene.image.Image;
+        import invaders.engine.GameEngine;
+        import invaders.factory.EnemyProjectileFactory;
+        import invaders.factory.Projectile;
+        import invaders.factory.ProjectileFactory;
+        import invaders.physics.Collider;
+        import invaders.physics.Vector2D;
+        import invaders.rendering.Renderable;
+        import invaders.strategy.ProjectileStrategy;
+        import javafx.scene.image.Image;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Random;
+        import java.io.File;
+        import java.util.ArrayList;
+        import java.util.Random;
 
 public class Enemy implements GameObject, Renderable, Cloneable {
     private Vector2D position;
@@ -39,27 +39,27 @@ public class Enemy implements GameObject, Renderable, Cloneable {
 
     @Override
     public void update(GameEngine engine) {
-        if(enemyProjectile.size()<3){
-            if(this.isAlive() &&  random.nextInt(120)==20){
-                Projectile p = projectileFactory.createProjectile(new Vector2D(position.getX() + this.image.getWidth() / 2, position.getY() + image.getHeight() + 2),projectileStrategy, projectileImage);
-                enemyProjectile.add(p);
-                engine.getPendingToAddGameObject().add(p);
-                engine.getPendingToAddRenderable().add(p);
-            }
-        }else{
-            pendingToDeleteEnemyProjectile.clear();
-            for(Projectile p : enemyProjectile){
-                if(!p.isAlive()){
-                    engine.getPendingToRemoveGameObject().add(p);
-                    engine.getPendingToRemoveRenderable().add(p);
-                    pendingToDeleteEnemyProjectile.add(p);
-                }
-            }
-
-            for(Projectile p: pendingToDeleteEnemyProjectile){
-                enemyProjectile.remove(p);
-            }
-        }
+//        if(enemyProjectile.size()<3){
+//            if(this.isAlive() &&  random.nextInt(120)==20){
+//                Projectile p = projectileFactory.createProjectile(new Vector2D(position.getX() + this.image.getWidth() / 2, position.getY() + image.getHeight() + 2),projectileStrategy, projectileImage);
+//                enemyProjectile.add(p);
+//                engine.getPendingToAddGameObject().add(p);
+//                engine.getPendingToAddRenderable().add(p);
+//            }
+//        }else{
+//            pendingToDeleteEnemyProjectile.clear();
+//            for(Projectile p : enemyProjectile){
+//                if(!p.isAlive()){
+//                    engine.getPendingToRemoveGameObject().add(p);
+//                    engine.getPendingToRemoveRenderable().add(p);
+//                    pendingToDeleteEnemyProjectile.add(p);
+//                }
+//            }
+//
+//            for(Projectile p: pendingToDeleteEnemyProjectile){
+//                enemyProjectile.remove(p);
+//            }
+//        }
 
         if(this.position.getX()<=this.image.getWidth() || this.position.getX()>=(engine.getGameWidth()-this.image.getWidth()-1)){
             this.position.setY(this.position.getY()+25);
@@ -90,7 +90,7 @@ public class Enemy implements GameObject, Renderable, Cloneable {
 
     @Override
     public double getHeight() {
-       return this.image.getHeight();
+        return this.image.getHeight();
     }
 
     @Override
@@ -146,10 +146,26 @@ public class Enemy implements GameObject, Renderable, Cloneable {
     public ProjectileStrategy getProjectileStrategy() { return projectileStrategy; }
     @Override
     public Enemy clone() {
-        try {
-            return (Enemy) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("Unable to clone", e);
+        Enemy clonedEnemy = new Enemy(position.clone());
+        clonedEnemy.lives = lives;
+        clonedEnemy.image = image;
+        clonedEnemy.xVel = xVel;
+
+        clonedEnemy.enemyProjectile = new ArrayList<>();
+        for (Projectile projectile : enemyProjectile) {
+            clonedEnemy.enemyProjectile.add(projectile.clone());
         }
+
+        clonedEnemy.pendingToDeleteEnemyProjectile = new ArrayList<>();
+        for (Projectile projectile : pendingToDeleteEnemyProjectile) {
+            clonedEnemy.pendingToDeleteEnemyProjectile.add(projectile.clone());
+        }
+
+        clonedEnemy.projectileStrategy = projectileStrategy;
+        clonedEnemy.projectileFactory = projectileFactory;
+        clonedEnemy.projectileImage = projectileImage;
+        clonedEnemy.random = new Random();
+
+        return clonedEnemy;
     }
 }

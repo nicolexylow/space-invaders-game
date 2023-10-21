@@ -31,4 +31,10 @@ public class EnemyProjectile extends Projectile{
     }
 
     public ProjectileStrategy getStrategy() { return strategy; }
+
+    @Override
+    public Projectile clone() {
+        Projectile clonedProjectile = new EnemyProjectile(getPosition().clone(), strategy, getImage());
+        return clonedProjectile;
+    }
 }

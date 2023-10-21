@@ -7,7 +7,7 @@ import invaders.physics.Vector2D;
 import invaders.rendering.Renderable;
 import javafx.scene.image.Image;
 
-public abstract class Projectile implements Renderable, GameObject, Cloneable {
+public abstract class Projectile implements Renderable, GameObject {
     private int lives = 1;
     private Vector2D position;
     private final Image image;
@@ -60,13 +60,5 @@ public abstract class Projectile implements Renderable, GameObject, Cloneable {
         return this.lives>0;
     }
 
-    @Override
-    public Projectile clone() {
-        try {
-            return (Projectile) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("Unable to clone", e);
-        }
-    }
-
+    public abstract Projectile clone();
 }

@@ -26,4 +26,10 @@ public class PlayerProjectile extends Projectile {
     public String getRenderableObjectName() {
         return "PlayerProjectile";
     }
+
+    @Override
+    public Projectile clone() {
+        Projectile clonedProjectile = new PlayerProjectile(getPosition().clone(), strategy);
+        return clonedProjectile;
+    }
 }

@@ -5,7 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import invaders.ConfigReader;
 import invaders.builder.BunkerBuilder;
@@ -296,17 +298,31 @@ public class GameEngine implements Subject, Cloneable {
 	// MEMENTO PATTERN
 
 	public StateMemento save() {
-		// deep copying so that it does not reference the same renderables and gameObjects list
-		List<Renderable> copiedRenderables = new ArrayList<>();
-		for (Renderable ro : renderables) {
-			copiedRenderables.add(ro.clone());
-		}
 
-		List<GameObject> copiedGameObjects = new ArrayList<>();
 		for (GameObject go : gameObjects) {
-			copiedGameObjects.add(go.clone());
+			if (go instanceof Enemy) {
+				System.out.println(((Enemy) go).getPosition().getY());
+			}
 		}
 
+		Map<Renderable, Renderable> originalToCloned = new HashMap<>();
+		List<GameObject> copiedGameObjects = new ArrayList<>();
+		List<Renderable> copiedRenderables = new ArrayList<>();
+
+		for (Renderable ro : renderables) {
+			Renderable clonedRenderable = ro.clone(); // deep copying so that it does not reference the same gameObjects and renderables list
+			copiedRenderables.add(clonedRenderable);
+			originalToCloned.put(ro, clonedRenderable);
+		}
+
+		// GameObject needs to reference the same object that is also an instance of Renderable
+		for (GameObject go : gameObjects) {
+			if (go instanceof Renderable) {
+				copiedGameObjects.add((GameObject) originalToCloned.get(go));
+			} else {
+				copiedGameObjects.add(go.clone());
+			}
+		}
 		long currentElapsedMillis = System.currentTimeMillis() - getGamePanel().getStartTime();
 
 		return new StateMemento(getGamePanel().getScore(), currentElapsedMillis, copiedRenderables, copiedGameObjects);
@@ -317,5 +333,11 @@ public class GameEngine implements Subject, Cloneable {
 		gameObjects = new ArrayList<>(stateMemento.getGameObjects());
 		getGamePanel().manualSetScore(stateMemento.getScore());
 		getGamePanel().manualSetStartTime(System.currentTimeMillis() - stateMemento.getElapsedMillis());
+
+		for (GameObject go : stateMemento.getGameObjects()) {
+			if (go instanceof Enemy) {
+				System.out.println(((Enemy) go).getPosition().getY());
+			}
+		}
 	}
 }
