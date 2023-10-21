@@ -349,18 +349,22 @@ public class GameEngine implements Subject, Cloneable {
 			if (strategy.equals("fast")) {
 				if (go instanceof Enemy && ((Enemy) go).getProjectileStrategy() instanceof FastProjectileStrategy ) {
 					((Enemy) go).setLives(0);
+					getGamePanel().manualSetScore(getGamePanel().getScore() + 4);
 				}
 
 				if (go instanceof EnemyProjectile && ((EnemyProjectile) go).getStrategy() instanceof FastProjectileStrategy) {
 					((EnemyProjectile) go).takeDamage(1);
+					getGamePanel().manualSetScore(getGamePanel().getScore() + 2);
 				}
 			} else if (strategy.equals("slow")) {
 				if (go instanceof Enemy && ((Enemy) go).getProjectileStrategy() instanceof SlowProjectileStrategy ) {
 					((Enemy) go).setLives(0);
+					getGamePanel().manualSetScore(getGamePanel().getScore() + 3);
 				}
 
 				if (go instanceof EnemyProjectile && ((EnemyProjectile) go).getStrategy() instanceof SlowProjectileStrategy) {
 					((EnemyProjectile) go).takeDamage(1);
+					getGamePanel().manualSetScore(getGamePanel().getScore() + 1);
 				}
 			}
 		}

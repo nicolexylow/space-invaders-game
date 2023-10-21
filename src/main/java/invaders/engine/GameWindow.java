@@ -72,15 +72,11 @@ public class GameWindow {
         // CHEAT BUTTONS
         Button removeFastEnemyButton = new Button("Remove Fast Enemy");
         removeFastEnemyButton.setFocusTraversable(false);
-        removeFastEnemyButton.setOnAction(e -> {
-            model.remove("slow");
-        });
+        removeFastEnemyButton.setOnAction(e -> model.remove("fast"));
 
         Button removeSlowEnemyButton = new Button("Remove Slow Enemy");
         removeSlowEnemyButton.setFocusTraversable(false);
-        removeSlowEnemyButton.setOnAction(e -> {
-            model.remove("fast");
-        });
+        removeSlowEnemyButton.setOnAction(e -> model.remove("slow"));
 
         HBox buttonBox = new HBox(10);
         buttonBox.getChildren().addAll(saveButton, undoButton, removeFastEnemyButton, removeSlowEnemyButton);
