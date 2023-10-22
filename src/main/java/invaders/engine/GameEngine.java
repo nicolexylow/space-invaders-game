@@ -301,26 +301,28 @@ public class GameEngine implements Subject, Cloneable {
 
 		for (GameObject go : gameObjects) {
 			if (go instanceof Enemy) {
-				System.out.println(((Enemy) go).getPosition().getY());
+				System.out.println("Saved: " +((Enemy) go).getPosition().getY());
 			}
 		}
 
-		Map<Renderable, Renderable> originalToCloned = new HashMap<>();
+		Map<GameObject, GameObject> originalToCloned = new HashMap<>();
 		List<GameObject> copiedGameObjects = new ArrayList<>();
 		List<Renderable> copiedRenderables = new ArrayList<>();
 
-		for (Renderable ro : renderables) {
-			Renderable clonedRenderable = ro.clone(); // deep copying so that it does not reference the same gameObjects and renderables list
-			copiedRenderables.add(clonedRenderable);
-			originalToCloned.put(ro, clonedRenderable);
+		for (GameObject go : gameObjects) {
+			if (go instanceof Enemy) {
+				GameObject clonedGameObject = go.clone(); // deep copying so that it does not reference the same gameObjects and renderables list
+				copiedGameObjects.add(clonedGameObject);
+				originalToCloned.put(go, clonedGameObject);
+			}
 		}
 
-		// GameObject needs to reference the same object that is also an instance of Renderable
-		for (GameObject go : gameObjects) {
-			if (go instanceof Renderable) {
-				copiedGameObjects.add((GameObject) originalToCloned.get(go));
+		// Renderable needs to reference the same object that is also an instance of GameObject
+		for (Renderable ro : renderables) {
+			if (ro instanceof GameObject && ro instanceof Enemy) {
+				copiedRenderables.add((Renderable) originalToCloned.get(ro));
 			} else {
-				copiedGameObjects.add(go.clone());
+				copiedRenderables.add(ro.clone());
 			}
 		}
 		long currentElapsedMillis = System.currentTimeMillis() - getGamePanel().getStartTime();
@@ -336,7 +338,7 @@ public class GameEngine implements Subject, Cloneable {
 
 		for (GameObject go : stateMemento.getGameObjects()) {
 			if (go instanceof Enemy) {
-				System.out.println(((Enemy) go).getPosition().getY());
+				System.out.println("After revert: " + ((Enemy) go).getPosition().getY());
 			}
 		}
 	}
