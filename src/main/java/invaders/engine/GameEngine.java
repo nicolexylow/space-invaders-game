@@ -301,19 +301,20 @@ public class GameEngine implements Subject, Cloneable {
 
 		List<Enemy> enemies = new ArrayList<>();
 		List<Bunker> bunkers = new ArrayList<>();
+		Player player = null;
 
-		for (GameObject go : gameObjects) {
-			if (go instanceof Enemy) {
-				enemies.add((Enemy) go.clone());
-			}
-
-			if (go instanceof Bunker) {
-				bunkers.add((Bunker) go.clone());
+		for (Renderable ro : renderables) {
+			if (ro.getRenderableObjectName().equals("Enemy")) {
+				enemies.add((Enemy) ro.clone());
+			} else if (ro.getRenderableObjectName().equals("Bunker")) {
+				bunkers.add((Bunker) ro.clone());
+			} else if (ro.getRenderableObjectName().equals("Player")) {
+				player = (Player) ro.clone();
 			}
 		}
 
 		long currentElapsedMillis = System.currentTimeMillis() - getGamePanel().getStartTime();
-		return new StateMemento(getGamePanel().getScore(), currentElapsedMillis, enemies);
+		return new StateMemento(getGamePanel().getScore(), currentElapsedMillis, enemies, bunkers, player);
 	}
 
 	public void revert(StateMemento stateMemento) {
@@ -333,12 +334,14 @@ public class GameEngine implements Subject, Cloneable {
 		}
 
 		// bunker revert
-//
-//		for (Bunker bunker : stateMemento.getBunkers()) {
-//			Bunker newBunker = bunker.clone();
-//			renderables.add(newBunker);
-//			gameObjects.add(newBunker);
-//		}
+		for (Bunker bunker : stateMemento.getBunkers()) {
+			Bunker newBunker = bunker.clone();
+			renderables.add(newBunker);
+			gameObjects.add(newBunker);
+		}
+
+		// player revert
+		renderables.add(player);
 
 
 		getGamePanel().manualSetScore(stateMemento.getScore());

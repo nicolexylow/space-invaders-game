@@ -1,5 +1,6 @@
 package invaders.entities;
 
+import invaders.ConfigReader;
 import invaders.factory.PlayerProjectile;
 import invaders.factory.PlayerProjectileFactory;
 import invaders.factory.Projectile;
@@ -111,11 +112,12 @@ public class Player implements Moveable, Renderable, Cloneable {
     }
     @Override
     public Player clone() {
-        try {
-            return (Player) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("Unable to clone", e);
-        }
+        Player clonedPlayer = new Player(ConfigReader.getPlayerInfo());
+        clonedPlayer.health = health;
+        clonedPlayer.velocity = velocity;
+        clonedPlayer.playerProjectileFactory = playerProjectileFactory;
+
+        return clonedPlayer;
     }
 
 }

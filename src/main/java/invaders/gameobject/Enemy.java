@@ -167,7 +167,7 @@ public class Enemy implements GameObject, Renderable, Cloneable {
         clonedEnemy.projectileStrategy = projectileStrategy;
         clonedEnemy.projectileFactory = projectileFactory;
         clonedEnemy.projectileImage = projectileImage;
-        clonedEnemy.random = new Random();
+        clonedEnemy.random = random;
 
         return clonedEnemy;
     }
