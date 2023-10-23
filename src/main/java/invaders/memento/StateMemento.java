@@ -1,5 +1,7 @@
 package invaders.memento;
 
+import invaders.gameobject.Bunker;
+import invaders.gameobject.Enemy;
 import invaders.gameobject.GameObject;
 import invaders.rendering.Renderable;
 
@@ -8,22 +10,23 @@ import java.util.List;
 public class StateMemento {
     private int score;
     private long elapsedMillis;
-    private List<Renderable> renderables;
-    private List<GameObject> gameObjects;
+    private List<Enemy> enemies;
+    private List<Bunker> bunkers;
 
 
-    public StateMemento(int score, long elapsedMillis, List<Renderable> renderables, List<GameObject> gameObjects) {
+
+    public StateMemento(int score, long elapsedMillis, List<Enemy> enemies) {
         this.score = score;
         this.elapsedMillis = elapsedMillis;
-        this.renderables = renderables;
-        this.gameObjects = gameObjects;
+        this.enemies = enemies;
+        this.bunkers = bunkers;
     }
 
     public int getScore() { return score; }
 
     public long getElapsedMillis() { return elapsedMillis; }
 
-    public List<Renderable> getRenderables() { return renderables; }
+    public List<Enemy> getEnemies() { return enemies; }
 
-    public List<GameObject> getGameObjects() { return gameObjects; }
+    public List<Bunker> getBunkers() { return bunkers; }
 }

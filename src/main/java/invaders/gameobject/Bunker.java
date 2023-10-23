@@ -108,10 +108,14 @@ public class Bunker implements GameObject, Renderable, Cloneable {
     }
 
     public Bunker clone() {
-        try {
-            return (Bunker) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("Unable to clone", e);
-        }
+        Bunker clonedBunker = new Bunker();
+        clonedBunker.position = position.clone();
+        clonedBunker.width = width;
+        clonedBunker.height = height;
+        clonedBunker.lives = lives;
+        clonedBunker.image = image;
+        clonedBunker.state = state;
+
+        return clonedBunker;
     }
 }

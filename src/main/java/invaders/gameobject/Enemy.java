@@ -12,6 +12,7 @@ package invaders.gameobject;
 
         import java.io.File;
         import java.util.ArrayList;
+        import java.util.List;
         import java.util.Random;
 
 public class Enemy implements GameObject, Renderable, Cloneable {
@@ -39,27 +40,27 @@ public class Enemy implements GameObject, Renderable, Cloneable {
 
     @Override
     public void update(GameEngine engine) {
-//        if(enemyProjectile.size()<3){
-//            if(this.isAlive() &&  random.nextInt(120)==20){
-//                Projectile p = projectileFactory.createProjectile(new Vector2D(position.getX() + this.image.getWidth() / 2, position.getY() + image.getHeight() + 2),projectileStrategy, projectileImage);
-//                enemyProjectile.add(p);
-//                engine.getPendingToAddGameObject().add(p);
-//                engine.getPendingToAddRenderable().add(p);
-//            }
-//        }else{
-//            pendingToDeleteEnemyProjectile.clear();
-//            for(Projectile p : enemyProjectile){
-//                if(!p.isAlive()){
-//                    engine.getPendingToRemoveGameObject().add(p);
-//                    engine.getPendingToRemoveRenderable().add(p);
-//                    pendingToDeleteEnemyProjectile.add(p);
-//                }
-//            }
-//
-//            for(Projectile p: pendingToDeleteEnemyProjectile){
-//                enemyProjectile.remove(p);
-//            }
-//        }
+        if(enemyProjectile.size()<3){
+            if(this.isAlive() &&  random.nextInt(120)==20){
+                Projectile p = projectileFactory.createProjectile(new Vector2D(position.getX() + this.image.getWidth() / 2, position.getY() + image.getHeight() + 2),projectileStrategy, projectileImage);
+                enemyProjectile.add(p);
+                engine.getPendingToAddGameObject().add(p);
+                engine.getPendingToAddRenderable().add(p);
+            }
+        }else{
+            pendingToDeleteEnemyProjectile.clear();
+            for(Projectile p : enemyProjectile){
+                if(!p.isAlive()){
+                    engine.getPendingToRemoveGameObject().add(p);
+                    engine.getPendingToRemoveRenderable().add(p);
+                    pendingToDeleteEnemyProjectile.add(p);
+                }
+            }
+
+            for(Projectile p: pendingToDeleteEnemyProjectile){
+                enemyProjectile.remove(p);
+            }
+        }
 
         if(this.position.getX()<=this.image.getWidth() || this.position.getX()>=(engine.getGameWidth()-this.image.getWidth()-1)){
             this.position.setY(this.position.getY()+25);
@@ -102,6 +103,8 @@ public class Enemy implements GameObject, Renderable, Cloneable {
     public Layer getLayer() {
         return Layer.FOREGROUND;
     }
+
+    public List<Projectile> getProjectiles() { return enemyProjectile; }
 
     public void setPosition(Vector2D position) {
         this.position = position;

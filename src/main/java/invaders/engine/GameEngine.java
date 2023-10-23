@@ -299,48 +299,50 @@ public class GameEngine implements Subject, Cloneable {
 
 	public StateMemento save() {
 
-		for (GameObject go : gameObjects) {
-			if (go instanceof Enemy) {
-				System.out.println("Saved: " +((Enemy) go).getPosition().getY());
-			}
-		}
-
-		Map<GameObject, GameObject> originalToCloned = new HashMap<>();
-		List<GameObject> copiedGameObjects = new ArrayList<>();
-		List<Renderable> copiedRenderables = new ArrayList<>();
+		List<Enemy> enemies = new ArrayList<>();
+		List<Bunker> bunkers = new ArrayList<>();
 
 		for (GameObject go : gameObjects) {
 			if (go instanceof Enemy) {
-				GameObject clonedGameObject = go.clone(); // deep copying so that it does not reference the same gameObjects and renderables list
-				copiedGameObjects.add(clonedGameObject);
-				originalToCloned.put(go, clonedGameObject);
+				enemies.add((Enemy) go.clone());
+			}
+
+			if (go instanceof Bunker) {
+				bunkers.add((Bunker) go.clone());
 			}
 		}
 
-		// Renderable needs to reference the same object that is also an instance of GameObject
-		for (Renderable ro : renderables) {
-			if (ro instanceof GameObject && ro instanceof Enemy) {
-				copiedRenderables.add((Renderable) originalToCloned.get(ro));
-			} else {
-				copiedRenderables.add(ro.clone());
-			}
-		}
 		long currentElapsedMillis = System.currentTimeMillis() - getGamePanel().getStartTime();
-
-		return new StateMemento(getGamePanel().getScore(), currentElapsedMillis, copiedRenderables, copiedGameObjects);
+		return new StateMemento(getGamePanel().getScore(), currentElapsedMillis, enemies);
 	}
 
 	public void revert(StateMemento stateMemento) {
-		renderables = new ArrayList<>(stateMemento.getRenderables());
-		gameObjects = new ArrayList<>(stateMemento.getGameObjects());
+
+		renderables.clear();
+		gameObjects.clear();
+
+		// enemy revert
+		for (Enemy enemy : stateMemento.getEnemies()) {
+			Enemy newEnemy = enemy.clone();
+			for (Projectile projectile : enemy.getProjectiles()) {
+				renderables.add(projectile);
+				gameObjects.add(projectile);
+			}
+			renderables.add(newEnemy);
+			gameObjects.add(newEnemy);
+		}
+
+		// bunker revert
+//
+//		for (Bunker bunker : stateMemento.getBunkers()) {
+//			Bunker newBunker = bunker.clone();
+//			renderables.add(newBunker);
+//			gameObjects.add(newBunker);
+//		}
+
+
 		getGamePanel().manualSetScore(stateMemento.getScore());
 		getGamePanel().manualSetStartTime(System.currentTimeMillis() - stateMemento.getElapsedMillis());
-
-		for (GameObject go : stateMemento.getGameObjects()) {
-			if (go instanceof Enemy) {
-				System.out.println("After revert: " + ((Enemy) go).getPosition().getY());
-			}
-		}
 	}
 
 	//--------------------------------------------------------
