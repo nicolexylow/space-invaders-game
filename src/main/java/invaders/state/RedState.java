@@ -15,4 +15,13 @@ public class RedState implements BunkerState {
         // bunker.
 
     }
+    @Override
+    public RedState clone() {
+        return new RedState(null);
+    }
+
+    @Override
+    public void setBunker(Bunker bunker) {
+        this.bunker = bunker;
+    }
 }

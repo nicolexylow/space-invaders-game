@@ -114,7 +114,8 @@ public class Bunker implements GameObject, Renderable, Cloneable {
         clonedBunker.height = height;
         clonedBunker.lives = lives;
         clonedBunker.image = image;
-        clonedBunker.state = state;
+        clonedBunker.state = state.clone();  // Deep clone the state
+        clonedBunker.state.setBunker(clonedBunker);
 
         return clonedBunker;
     }

@@ -15,4 +15,13 @@ public class YellowState implements BunkerState {
         bunker.setImage(new Image(new File("src/main/resources/bunkerRed.png").toURI().toString()));
         bunker.setState(new RedState(bunker));
     }
+    @Override
+    public YellowState clone() {
+        return new YellowState(null);
+    }
+
+    @Override
+    public void setBunker(Bunker bunker) {
+        this.bunker = bunker;
+    }
 }
