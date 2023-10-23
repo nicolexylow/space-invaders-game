@@ -326,8 +326,9 @@ public class GameEngine implements Subject, Cloneable {
 		for (Enemy enemy : stateMemento.getEnemies()) {
 			Enemy newEnemy = enemy.clone();
 			for (Projectile projectile : enemy.getProjectiles()) {
-				renderables.add(projectile);
-				gameObjects.add(projectile);
+				Projectile newProjectile = projectile.clone();
+				renderables.add(newProjectile);
+				gameObjects.add(newProjectile);
 			}
 			renderables.add(newEnemy);
 			gameObjects.add(newEnemy);
