@@ -53,21 +53,21 @@ public class GameEngine implements Subject, Cloneable {
 
 	public GameEngine(String config){
 		// Read the config here
-		ConfigReader.parse(config);
+		ConfigReader configReader = ConfigReader.getInstance("src/main/resources/config_easy.json");
 
 		// Get game width and height
-		gameWidth = ((Long)((JSONObject) ConfigReader.getGameInfo().get("size")).get("x")).intValue();
-		gameHeight = ((Long)((JSONObject) ConfigReader.getGameInfo().get("size")).get("y")).intValue();
+		gameWidth = ((Long)((JSONObject) configReader.getGameInfo().get("size")).get("x")).intValue();
+		gameHeight = ((Long)((JSONObject) configReader.getGameInfo().get("size")).get("y")).intValue();
 
 		//Get player info
-		this.player = new Player(ConfigReader.getPlayerInfo());
+		this.player = new Player(configReader.getPlayerInfo());
 		renderables.add(player);
 
 
 		Director director = new Director();
 		BunkerBuilder bunkerBuilder = new BunkerBuilder();
 		//Get Bunkers info
-		for(Object eachBunkerInfo:ConfigReader.getBunkersInfo()){
+		for(Object eachBunkerInfo:configReader.getBunkersInfo()){
 			Bunker bunker = director.constructBunker(bunkerBuilder, (JSONObject) eachBunkerInfo);
 			gameObjects.add(bunker);
 			renderables.add(bunker);
@@ -76,7 +76,7 @@ public class GameEngine implements Subject, Cloneable {
 
 		EnemyBuilder enemyBuilder = new EnemyBuilder();
 		//Get Enemy info
-		for(Object eachEnemyInfo:ConfigReader.getEnemiesInfo()){
+		for(Object eachEnemyInfo:configReader.getEnemiesInfo()){
 			Enemy enemy = director.constructEnemy(this,enemyBuilder,(JSONObject)eachEnemyInfo);
 			gameObjects.add(enemy);
 			renderables.add(enemy);

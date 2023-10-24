@@ -11,11 +11,22 @@ import java.io.IOException;
 import java.sql.Statement;
 
 public class ConfigReader {
+    public static ConfigReader instance;
     private static JSONObject gameInfo;
     private static JSONObject playerInfo;
     private static JSONArray bunkersInfo;
     private static JSONArray enemiesInfo;
 
+    private ConfigReader(String config) {
+        parse(config);
+    }
+
+    public static ConfigReader getInstance(String config) {
+        if (instance == null) {
+            instance = new ConfigReader(config);
+        }
+        return instance;
+    }
 
     public static void parse(String configPath){
         JSONParser parser = new JSONParser();
