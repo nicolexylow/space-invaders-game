@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.sql.Statement;
 
 public class ConfigReader {
-    public static ConfigReader instance;
+    private static ConfigReader instance;
     private static JSONObject gameInfo;
     private static JSONObject playerInfo;
     private static JSONArray bunkersInfo;
