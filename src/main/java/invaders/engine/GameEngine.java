@@ -53,7 +53,7 @@ public class GameEngine implements Subject, Cloneable {
 
 	public GameEngine(String config){
 		// Read the config here
-		ConfigReader configReader = ConfigReader.getInstance("src/main/resources/config_easy.json");
+		ConfigReader configReader = ConfigReader.getInstance(config);
 
 		// Get game width and height
 		gameWidth = ((Long)((JSONObject) configReader.getGameInfo().get("size")).get("x")).intValue();
