@@ -16,12 +16,7 @@ public class YellowState implements BunkerState {
         bunker.setState(new RedState(bunker));
     }
     @Override
-    public YellowState clone() {
-        return new YellowState(null);
-    }
-
-    @Override
-    public void setBunker(Bunker bunker) {
-        this.bunker = bunker;
+    public YellowState clone(Bunker bunker) {
+        return new YellowState(bunker);
     }
 }

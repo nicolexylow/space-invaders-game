@@ -16,12 +16,7 @@ public class RedState implements BunkerState {
 
     }
     @Override
-    public RedState clone() {
-        return new RedState(null);
-    }
-
-    @Override
-    public void setBunker(Bunker bunker) {
-        this.bunker = bunker;
+    public RedState clone(Bunker bunker) {
+        return new RedState(bunker);
     }
 }
