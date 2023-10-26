@@ -14,6 +14,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import invaders.entities.EntityView;
@@ -70,16 +71,39 @@ public class GameWindow {
         });
 
         // CHEAT BUTTONS
-        Button removeFastEnemyButton = new Button("Remove Fast Enemy");
+        // enemies
+        Button removeFastEnemyButton = new Button("Remove Fast Enemies");
+        removeFastEnemyButton.setFont(new Font(10));
         removeFastEnemyButton.setFocusTraversable(false);
-        removeFastEnemyButton.setOnAction(e -> model.remove("fast"));
+        removeFastEnemyButton.setOnAction(e -> model.removeEnemy("fast"));
 
-        Button removeSlowEnemyButton = new Button("Remove Slow Enemy");
+        Button removeSlowEnemyButton = new Button("Remove Slow Enemies");
+        removeSlowEnemyButton.setFont(new Font(10));
         removeSlowEnemyButton.setFocusTraversable(false);
-        removeSlowEnemyButton.setOnAction(e -> model.remove("slow"));
+        removeSlowEnemyButton.setOnAction(e -> model.removeEnemy("slow"));
+
+        // projectiles
+        Button removeFastProjectile = new Button("Remove Fast Projectiles");
+        removeFastProjectile.setFont(new Font(10));
+        removeFastProjectile.setFocusTraversable(false);
+        removeFastProjectile.setOnAction(e -> model.removeProjectile("fast"));
+
+        Button removeSlowProjectile = new Button("Remove Slow Projectiles");
+        removeSlowProjectile.setFont(new Font(10));
+        removeSlowProjectile.setFocusTraversable(false);
+        removeSlowProjectile.setOnAction(e -> model.removeProjectile("slow"));
+
+        HBox firstLine = new HBox(10);
+        firstLine.getChildren().addAll(removeFastEnemyButton, removeSlowEnemyButton);
+
+        HBox secondLine = new HBox(10);
+        secondLine.getChildren().addAll(removeFastProjectile, removeSlowProjectile);
+
+        VBox groupedButtons = new VBox(10);  // 10 is the spacing between lines
+        groupedButtons.getChildren().addAll(firstLine, secondLine);
 
         HBox buttonBox = new HBox(10);
-        buttonBox.getChildren().addAll(saveButton, undoButton, removeFastEnemyButton, removeSlowEnemyButton);
+        buttonBox.getChildren().addAll(saveButton, undoButton, groupedButtons);
         buttonBox.layoutXProperty().bind(pane.widthProperty().subtract(buttonBox.widthProperty().add(10)));
         buttonBox.setLayoutY(10);
 

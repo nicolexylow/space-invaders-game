@@ -361,7 +361,7 @@ public class GameEngine implements Subject, Cloneable {
 	//--------------------------------------------------------
 	// CHEAT FEATURE
 
-	public void remove(String strategy) {
+	public void removeEnemy(String strategy) {
 		for (GameObject go : gameObjects) {
 			if (strategy.equals("fast")) {
 				if (go instanceof Enemy && ((Enemy) go).getProjectileStrategy() instanceof FastProjectileStrategy ) {
@@ -369,19 +369,25 @@ public class GameEngine implements Subject, Cloneable {
 					pendingToRemoveGameObject.add(go);
 					getGamePanel().manualSetScore(getGamePanel().getScore() + 4);
 				}
-
-				if (go instanceof EnemyProjectile && ((EnemyProjectile) go).getStrategy() instanceof FastProjectileStrategy) {
-					((EnemyProjectile) go).takeDamage(1);
-					pendingToRemoveGameObject.add(go);
-					getGamePanel().manualSetScore(getGamePanel().getScore() + 2);
-				}
 			} else if (strategy.equals("slow")) {
 				if (go instanceof Enemy && ((Enemy) go).getProjectileStrategy() instanceof SlowProjectileStrategy ) {
 					((Enemy) go).setLives(0);
 					pendingToRemoveGameObject.add(go);
 					getGamePanel().manualSetScore(getGamePanel().getScore() + 3);
 				}
+			}
+		}
+	}
 
+	public void removeProjectile(String strategy) {
+		for (GameObject go : gameObjects) {
+			if (strategy.equals("fast")) {
+				if (go instanceof EnemyProjectile && ((EnemyProjectile) go).getStrategy() instanceof FastProjectileStrategy) {
+					((EnemyProjectile) go).takeDamage(1);
+					pendingToRemoveGameObject.add(go);
+					getGamePanel().manualSetScore(getGamePanel().getScore() + 2);
+				}
+			} else if (strategy.equals("slow")) {
 				if (go instanceof EnemyProjectile && ((EnemyProjectile) go).getStrategy() instanceof SlowProjectileStrategy) {
 					((EnemyProjectile) go).takeDamage(1);
 					pendingToRemoveGameObject.add(go);
