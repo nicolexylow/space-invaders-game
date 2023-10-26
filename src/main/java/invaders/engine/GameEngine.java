@@ -93,6 +93,15 @@ public class GameEngine implements Subject, Cloneable {
 
 		movePlayer();
 
+		if (!player.isAlive()) {
+			for (Observer observer : observers) {
+				if (observer instanceof GamePanel) {
+					((GamePanel) observer).setCurrentState(GameState.LOST);
+				}
+			}
+			return;
+		}
+
 		for(GameObject go: gameObjects){
 			go.update(this);
 
