@@ -14,6 +14,7 @@ import invaders.builder.BunkerBuilder;
 import invaders.builder.Director;
 import invaders.builder.EnemyBuilder;
 import invaders.factory.EnemyProjectile;
+import invaders.factory.PlayerProjectile;
 import invaders.factory.Projectile;
 import invaders.gameobject.Bunker;
 import invaders.gameobject.Enemy;
@@ -91,8 +92,6 @@ public class GameEngine implements Subject, Cloneable {
 	public void update(){
 		timer+=1;
 
-		movePlayer();
-
 		if (!player.isAlive()) {
 			for (Observer observer : observers) {
 				if (observer instanceof GamePanel) {
@@ -101,6 +100,17 @@ public class GameEngine implements Subject, Cloneable {
 			}
 			return;
 		}
+
+		if (allEnemiesDestroyed()) {
+			for (Observer observer : observers) {
+				if (observer instanceof GamePanel) {
+					((GamePanel) observer).setCurrentState(GameState.WON);
+				}
+			}
+			return;
+		}
+
+		movePlayer();
 
 		for(GameObject go: gameObjects){
 			go.update(this);
@@ -184,14 +194,6 @@ public class GameEngine implements Subject, Cloneable {
 
 			if(ro.getPosition().getY() <= 0) {
 				ro.getPosition().setY(offset);
-			}
-		}
-
-		if (allEnemiesDestroyed()) {
-			for (Observer observer : observers) {
-				if (observer instanceof GamePanel) {
-					((GamePanel) observer).setCurrentState(GameState.WON);
-				}
 			}
 		}
 
@@ -310,6 +312,7 @@ public class GameEngine implements Subject, Cloneable {
 
 		List<Enemy> enemies = new ArrayList<>();
 		List<Bunker> bunkers = new ArrayList<>();
+		List<Projectile> playerProjectiles = new ArrayList<>();
 		Player player = null;
 
 		for (Renderable ro : renderables) {
@@ -319,14 +322,28 @@ public class GameEngine implements Subject, Cloneable {
 				bunkers.add((Bunker) ro.clone());
 			} else if (ro.getRenderableObjectName().equals("Player")) {
 				player = (Player) ro.clone();
+			} else if (ro.getRenderableObjectName().equals("PlayerProjectile")) {
+				playerProjectiles.add((Projectile) ro.clone());
+			}
+		}
+
+		GameState gameState = null;
+		for (Observer observer : observers) {
+			if (observer instanceof GamePanel) {
+				gameState = ((GamePanel) observer).getCurrentState();
 			}
 		}
 
 		long currentElapsedMillis = System.currentTimeMillis() - getGamePanel().getStartTime();
-		return new StateMemento(getGamePanel().getScore(), currentElapsedMillis, enemies, bunkers, player);
+		return new StateMemento(getGamePanel().getScore(), currentElapsedMillis, enemies, bunkers, player, playerProjectiles, gameState);
 	}
 
 	public void revert(StateMemento stateMemento) {
+		for (Observer observer : observers) {
+			if (observer instanceof GamePanel) {
+				((GamePanel) observer).setCurrentState(stateMemento.getGameState());
+			}
+		}
 
 		renderables.clear();
 		gameObjects.clear();
@@ -351,8 +368,15 @@ public class GameEngine implements Subject, Cloneable {
 		}
 
 		// player revert
+		player = stateMemento.getPlayer().clone();
 		renderables.add(player);
 
+		// player projectile revert
+		for (Projectile projectile : stateMemento.getPlayerProjectiles()) {
+			Projectile newProjectile = projectile.clone();
+			renderables.add(newProjectile);
+			gameObjects.add(newProjectile);
+		}
 
 		getGamePanel().manualSetScore(stateMemento.getScore());
 		getGamePanel().manualSetStartTime(System.currentTimeMillis() - stateMemento.getElapsedMillis());

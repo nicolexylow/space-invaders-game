@@ -21,7 +21,7 @@ import java.io.File;
 
 public class Player implements Moveable, Renderable, Cloneable {
 
-    private final Vector2D position;
+    private Vector2D position;
     private double health;
     private double velocity;
 
@@ -113,6 +113,7 @@ public class Player implements Moveable, Renderable, Cloneable {
     @Override
     public Player clone() {
         Player clonedPlayer = new Player(ConfigReader.getPlayerInfo());
+        clonedPlayer.position = position.clone();
         clonedPlayer.health = health;
         clonedPlayer.velocity = velocity;
         clonedPlayer.playerProjectileFactory = playerProjectileFactory;
