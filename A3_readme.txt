@@ -7,7 +7,11 @@ Features implemented:
     - Medium
     - Hard
 - Time and Score
-- Undo and Cheat (click on one of the top left button buttons corresponding to the 4 different cheat options):
+- Undo and Cheat
+    Undo (there needs to be saved progress before undoing and undoing without first saving will not do anything)
+    - Save (click on this button to save your progress or to overwrite your previous save progress)
+    - Undo (click on this button to revert to your most recently saved progress - you may click on this multiple times to keep reverting)
+    Cheat (click on one of the top left button buttons corresponding to the 4 different cheat options):
     - Remove Fast Enemies
     - Remove Slow Enemies
     - Remove Fast Projectiles (Enemy projectiles)
